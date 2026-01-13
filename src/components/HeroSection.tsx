@@ -4,7 +4,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { Hand, MousePointerClick } from 'lucide-react'
+import { MousePointerClick } from 'lucide-react'
 import { GreyGamingLogo } from './GreyGamingLogo'
 
 export function HeroSection() {
@@ -149,23 +149,6 @@ export function HeroSection() {
                 </motion.span>
               </span>
             </motion.span>
-
-            {attention && !clicked ? (
-              <motion.span
-                aria-hidden="true"
-                className="pointer-events-none absolute -right-4 -top-5 z-20 rounded-full border border-neon/30 bg-charcoal/40 p-2 text-neon/90 backdrop-blur-sm"
-                initial={{ opacity: 0, scale: 0.7 }}
-                animate={{
-                  opacity: [0.6, 1, 0.6],
-                  y: [0, -4, 0],
-                  rotate: [-10, 10, -10],
-                  scale: [1, 1.06, 1],
-                }}
-                transition={{ duration: 1.1, repeat: Infinity, ease: 'easeInOut' }}
-              >
-                <Hand className="h-5 w-5" />
-              </motion.span>
-            ) : null}
 
             <Link href="/world" legacyBehavior>
               <motion.a
