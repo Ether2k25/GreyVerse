@@ -13,12 +13,14 @@ export function FogOverlay() {
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
+    const renderScale = 0.35
+
     let animationId: number
     let time = 0
 
     const resize = () => {
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
+      canvas.width = Math.max(1, Math.floor(window.innerWidth * renderScale))
+      canvas.height = Math.max(1, Math.floor(window.innerHeight * renderScale))
     }
 
     const animate = () => {
