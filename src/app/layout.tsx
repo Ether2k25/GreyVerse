@@ -16,14 +16,14 @@ const outfit = Outfit({
 })
 
 export const metadata: Metadata = {
-  title: 'GREY GAMING — Coming Soon',
+  title: 'GREY GAMING',
   description: 'Enterprise iGaming provider. Built for speed, scale, and compliance. Something big is loading the game.',
   keywords: ['iGaming', 'casino', 'sports betting', 'gaming platform', 'enterprise'],
   authors: [{ name: 'GREY GAMING' }],
   creator: 'GREY GAMING',
   publisher: 'GREY GAMING',
   openGraph: {
-    title: 'GREY GAMING — Coming Soon',
+    title: 'GREY GAMING',
     description: 'Enterprise iGaming provider. Built for speed, scale, and compliance.',
     url: 'https://greygaming.com',
     siteName: 'GREY GAMING',
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
         url: '/og.jpg',
         width: 1200,
         height: 630,
-        alt: 'GREY GAMING - Coming Soon',
+        alt: 'GREY GAMING',
       },
     ],
     locale: 'en_US',
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'GREY GAMING — Coming Soon',
+    title: 'GREY GAMING',
     description: 'Enterprise iGaming provider. Built for speed, scale, and compliance.',
     images: ['/og.jpg'],
   },
