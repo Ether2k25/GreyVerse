@@ -67,8 +67,8 @@ export function FogOverlay() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 2, delay: 1 }}
-      className="fixed inset-0 pointer-events-none z-0"
-      style={{ mixBlendMode: 'screen' }}
+      className="fixed inset-0 h-full w-full pointer-events-none z-0"
+      style={{ mixBlendMode: 'screen', width: '100%', height: '100%' }}
     />
   )
 }
