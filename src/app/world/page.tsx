@@ -51,6 +51,13 @@ const launchedGames: Game[] = [
     url: 'https://www.icecric247.com/sport/ball-event-detail/40041',
     imageSrc: '/7 coin toss.png',
   },
+  {
+    title: 'Penalty Shootout',
+    status: 'Launched',
+    description: 'Live and ready inside the Grey World.',
+    url: 'https://www.icecric247.com/sport/ball-event-detail/40045',
+    imageSrc: '/penalty.png',
+  },
 ]
 
 const lineupGames: Game[] = [
@@ -68,16 +75,9 @@ const lineupGames: Game[] = [
     url: 'https://www.icecric247.com',
     imageSrc: '/GG.png',
   },
-  {
-    title: 'Penalty Shootout',
-    status: 'In the lineup',
-    description: 'Coming soon in the Grey World lineup.',
-    url: 'https://www.icecric247.com',
-    imageSrc: '/GG.png',
-  },
 ]
 
-function GameCard({ game }: { game: Game }) {
+function GameCard({ game, onOpen }: { game: Game; onOpen?: (game: Game) => void }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -155,14 +155,24 @@ function GameCard({ game }: { game: Game }) {
 
       {game.url ? (
         <div className="mt-6">
-          <a
-            href={game.url}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center justify-center rounded-lg border border-neon/40 bg-neon/10 px-4 py-2 text-sm font-semibold text-neon transition-all duration-300 hover:bg-neon hover:text-charcoal focus:outline-none focus:ring-2 focus:ring-neon/50"
-          >
-            Open
-          </a>
+          {onOpen ? (
+            <button
+              type="button"
+              onClick={() => onOpen(game)}
+              className="inline-flex items-center justify-center rounded-lg border border-neon/40 bg-neon/10 px-4 py-2 text-sm font-semibold text-neon transition-all duration-300 hover:bg-neon hover:text-charcoal focus:outline-none focus:ring-2 focus:ring-neon/50"
+            >
+              Open
+            </button>
+          ) : (
+            <a
+              href={game.url}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center justify-center rounded-lg border border-neon/40 bg-neon/10 px-4 py-2 text-sm font-semibold text-neon transition-all duration-300 hover:bg-neon hover:text-charcoal focus:outline-none focus:ring-2 focus:ring-neon/50"
+            >
+              Open
+            </a>
+          )}
         </div>
       ) : null}
 
@@ -187,39 +197,10 @@ export default function WorldPage() {
   const greyVerseText = 'GreyVerse'
   const prefixText = useMemo(() => headlineText.replace(greyVerseText, ''), [headlineText])
   const [greyVerseEffectIndex, setGreyVerseEffectIndex] = useState(0)
-
-  useEffect(() => {
-    const intervalId = window.setInterval(() => {
-      setGreyVerseEffectIndex((current) => (current + 1) % 6)
-    }, 5000)
-
-    return () => {
-      window.clearInterval(intervalId)
-    }
-  }, [])
+  const [activeGame, setActiveGame] = useState<Game | null>(null)
 
   const greyVerseEffects = useMemo(
     () => [
-      {
-        initial: { rotateX: -70, opacity: 0.25 },
-        animate: { rotateX: [ -70, 0, 0 ], opacity: [0.25, 1, 1] },
-        transition: { duration: 1.1, ease: 'easeOut' },
-      },
-      {
-        initial: { rotateY: 120, opacity: 0.25 },
-        animate: { rotateY: [ 120, 0, 0 ], opacity: [0.25, 1, 1] },
-        transition: { duration: 1.2, ease: 'easeOut' },
-      },
-      {
-        initial: { scaleX: -1, rotateZ: -8, opacity: 0.4 },
-        animate: { scaleX: [ -1, 1, 1 ], rotateZ: [ -8, 0, 0 ], opacity: [0.4, 1, 1] },
-        transition: { duration: 1.05, ease: 'easeOut' },
-      },
-      {
-        initial: { rotateZ: 18, rotateY: -18, opacity: 0.3 },
-        animate: { rotateZ: [ 18, 0, 0 ], rotateY: [ -18, 0, 0 ], opacity: [0.3, 1, 1] },
-        transition: { duration: 1.15, ease: 'easeOut' },
-      },
       {
         initial: {
           opacity: 0.35,
@@ -278,9 +259,24 @@ export default function WorldPage() {
           ease: 'easeInOut',
         },
       },
+      {
+        mode: 'letters',
+      },
     ],
     []
   )
+
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      setGreyVerseEffectIndex((current) => (current + 1) % greyVerseEffects.length)
+    }, 5000)
+
+    return () => {
+      window.clearInterval(intervalId)
+    }
+  }, [greyVerseEffects.length])
+
+  const activeGreyVerseEffect = greyVerseEffects[greyVerseEffectIndex] as any
 
   const headlineContainerVariants = {
     hidden: {},
@@ -304,6 +300,57 @@ export default function WorldPage() {
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-charcoal to-graphite relative overflow-hidden">
+      {activeGame?.url ? (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4"
+          role="dialog"
+          aria-modal="true"
+          aria-label={activeGame.title}
+          onClick={() => setActiveGame(null)}
+        >
+          <div
+            className="relative w-full max-w-6xl overflow-hidden rounded-2xl border border-accent/20 bg-charcoal/90"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="flex items-center justify-between gap-4 border-b border-accent/20 px-4 py-3">
+              <div className="min-w-0">
+                <p className="truncate text-sm font-semibold text-neon">{activeGame.title}</p>
+                <p className="truncate text-xs text-mist">{activeGame.url}</p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <a
+                  href={activeGame.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center justify-center rounded-lg border border-neon/40 bg-neon/10 px-3 py-2 text-xs font-semibold text-neon transition-all duration-300 hover:bg-neon hover:text-charcoal focus:outline-none focus:ring-2 focus:ring-neon/50"
+                >
+                  Open in new tab
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setActiveGame(null)}
+                  className="inline-flex items-center justify-center rounded-lg border border-accent/30 bg-charcoal/40 px-3 py-2 text-xs font-semibold text-mist transition-colors hover:text-neon hover:border-neon/40 focus:outline-none focus:ring-2 focus:ring-neon/50"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+
+            <div className="relative h-[75vh] w-full bg-black">
+              <iframe
+                key={activeGame.url}
+                src={activeGame.url}
+                title={activeGame.title}
+                className="h-full w-full"
+                referrerPolicy="no-referrer"
+                sandbox="allow-forms allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+                allow="fullscreen; autoplay; clipboard-read; clipboard-write"
+              />
+            </div>
+          </div>
+        </div>
+      ) : null}
       <div className="relative z-10">
         <header className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 pb-10">
           <div className="flex items-center justify-between gap-4">
@@ -325,20 +372,65 @@ export default function WorldPage() {
                   </motion.span>
                 ))}
                 <span className="inline-block" style={{ perspective: '900px' }}>
-                  <motion.span
-                    key={greyVerseEffectIndex}
-                    className="inline-block"
-                    style={{
-                      transformStyle: 'preserve-3d',
-                      textShadow: '0 0 18px rgba(255,255,255,0.18)',
-                      ...(greyVerseEffects[greyVerseEffectIndex] as any).style,
-                    }}
-                    initial={greyVerseEffects[greyVerseEffectIndex].initial}
-                    animate={greyVerseEffects[greyVerseEffectIndex].animate}
-                    transition={greyVerseEffects[greyVerseEffectIndex].transition}
-                  >
-                    {greyVerseText}
-                  </motion.span>
+                  {activeGreyVerseEffect?.mode === 'letters' ? (
+                    <motion.span
+                      key={greyVerseEffectIndex}
+                      className="inline-flex"
+                      style={{ transformStyle: 'preserve-3d', textShadow: '0 0 18px rgba(255,255,255,0.18)' }}
+                      initial="hidden"
+                      animate="visible"
+                      variants={{
+                        hidden: {},
+                        visible: {
+                          transition: {
+                            staggerChildren: 0.08,
+                          },
+                        },
+                      }}
+                    >
+                      {greyVerseText.split('').map((char: string, index: number) => (
+                        <motion.span
+                          key={`${char}-${index}`}
+                          className="inline-block"
+                          variants={{
+                            hidden: {
+                              opacity: 0,
+                              y: 18,
+                              rotateX: 60,
+                              filter: 'blur(6px)',
+                            },
+                            visible: {
+                              opacity: 1,
+                              y: [18, -10, 0, 6, 0],
+                              rotateX: [60, 0, 0],
+                              filter: ['blur(6px)', 'blur(0px)', 'blur(0px)'],
+                              transition: {
+                                duration: 0.9,
+                                ease: 'easeOut',
+                              },
+                            },
+                          }}
+                        >
+                          {char}
+                        </motion.span>
+                      ))}
+                    </motion.span>
+                  ) : (
+                    <motion.span
+                      key={greyVerseEffectIndex}
+                      className="inline-block"
+                      style={{
+                        transformStyle: 'preserve-3d',
+                        textShadow: '0 0 18px rgba(255,255,255,0.18)',
+                        ...(activeGreyVerseEffect as any)?.style,
+                      }}
+                      initial={(activeGreyVerseEffect as any)?.initial}
+                      animate={(activeGreyVerseEffect as any)?.animate}
+                      transition={(activeGreyVerseEffect as any)?.transition}
+                    >
+                      {greyVerseText}
+                    </motion.span>
+                  )}
                 </span>
               </motion.h1>
               <p className="mt-3 text-base sm:text-lg text-mist max-w-2xl">
@@ -366,7 +458,7 @@ export default function WorldPage() {
 
           <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {launchedGames.map((game) => (
-              <GameCard key={game.title} game={game} />
+              <GameCard key={game.title} game={game} onOpen={setActiveGame} />
             ))}
           </div>
         </section>
