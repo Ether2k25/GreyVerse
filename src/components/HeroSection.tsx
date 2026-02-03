@@ -1,7 +1,7 @@
 
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { MousePointerClick } from 'lucide-react'
@@ -15,6 +15,20 @@ export function HeroSection() {
   const ctaWrapperRef = useRef<HTMLDivElement | null>(null)
   const ctaTextRef = useRef<HTMLSpanElement | null>(null)
   const [cursorLeftPx, setCursorLeftPx] = useState<number | null>(null)
+
+  const mediaSources = useMemo(
+    () => [
+      '/Gifs/coin toss.gif',
+      '/Gifs/Horse Racing.mp4',
+      '/Gifs/penalty.mp4',
+      '/Gifs/bowled.mp4',
+      '/Gifs/six.mp4',
+      '/Gifs/Crash.mp4',
+    ],
+    []
+  )
+
+  const isVideo = (src: string) => src.toLowerCase().endsWith('.mp4')
 
   useEffect(() => {
     const alreadyClicked = localStorage.getItem('gg-cta-clicked') === 'true'
@@ -100,7 +114,7 @@ export function HeroSection() {
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1, ease: 'easeOut' }}
-          className="mb-12"
+          className="mb-12 opacity-60"
         >
           <GreyGamingLogo 
             customLogo={process.env.NEXT_PUBLIC_CUSTOM_LOGO} 
@@ -236,6 +250,33 @@ export function HeroSection() {
         >
           Built to outpace, outscale, and outlast - welcome to the future of iGaming.
         </motion.p>
+
+        <div className="mx-auto grid w-full max-w-5xl grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-3">
+          {mediaSources.map((src) => (
+            <div
+              key={src}
+              className="relative aspect-video overflow-hidden rounded-2xl border border-white/10 bg-charcoal/20 shadow-[0_0_0_1px_rgba(255,255,255,0.04)]"
+            >
+              {isVideo(src) ? (
+                <video
+                  key={src}
+                  src={src}
+                  className="h-full w-full object-cover"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  preload="metadata"
+                  disablePictureInPicture
+                />
+              ) : (
+                <img src={src} alt="" className="h-full w-full object-cover" draggable={false} />
+              )}
+
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/8 via-transparent to-white/5" />
+            </div>
+          ))}
+        </div>
       </div>
 
     </section>
